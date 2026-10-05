@@ -7,6 +7,8 @@
   })();
   if (!D) { document.getElementById("meta-line").textContent = "数据加载失败"; return; }
   var draws = D.draws, numbers = D.numbers;
+  var clsMap = { f: {}, b: {} };
+  numbers.forEach(function (r) { clsMap[r.z][r.n] = r.cls; });
 
   document.getElementById("meta-line").textContent =
     "近" + D.meta.count + "期 · " + D.meta.oldest + " – " + D.meta.newest;
@@ -14,8 +16,12 @@
   function ball(n, zone, sm) {
     return '<span class="ball ' + zone + (sm ? " sm" : "") + '">' + pad(n) + "</span>";
   }
-  function balls(arr, zone, sm) {
-    return '<div class="balls">' + arr.map(function (n) { return ball(n, zone, sm); }).join("") + "</div>";
+  function balls(arr, zone, sm, cls) {
+    return '<div class="balls">' + arr.map(function (n) {
+      var c = cls ? cls[n] : null;
+      var ex = c === "温" ? " hw" : (c === "冷" ? " hc" : "");
+      return '<span class="ball ' + zone + (sm ? " sm" : "") + ex + '">' + pad(n) + "</span>";
+    }).join("") + "</div>";
   }
   function omTxt(om) { return om < 0 ? "–" : om; }
   function pad(n) { return (n < 10 ? "0" : "") + n; }
@@ -103,8 +109,8 @@
   var tbody = document.querySelector("#hist-table tbody");
   function renderPage() {
     var rows = draws.slice(page * PER, page * PER + PER).map(function (d) {
-      return "<tr><td>" + d.i + "</td><td>" + d.d + "</td><td>" + balls(d.f, "front", true) +
-        "</td><td>" + balls(d.b, "back", true) + "</td><td>" + d.fs + "</td><td>" + d.sum + "</td></tr>";
+      return "<tr><td>" + d.i + "</td><td>" + d.d + "</td><td>" + balls(d.f, "front", true, clsMap.f) +
+        "</td><td>" + balls(d.b, "back", true, clsMap.b) + "</td><td>" + d.fs + "</td><td>" + d.sum + "</td></tr>";
     }).join("");
     tbody.innerHTML = rows;
     document.getElementById("pg-info").textContent = "第 " + (page + 1) + " / " + pages + " 页";

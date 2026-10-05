@@ -204,3 +204,12 @@ footer { text-align: center; color: var(--faint); font-size: 12px; padding: 10px
   .sec-head h2 { font-size: 23px; }
   th, td { padding: 9px 8px; font-size: 13px; }
 }
+
+/* 历史开奖:球按热/温/冷着色(热=默认亮色实心) */
+.ball.hw { box-shadow: none; }
+.ball.hw.front { background: #a86a28; }
+.ball.hw.back { background: #3e6cb0; }
+.ball.hc { background: transparent; box-shadow: none; }
+.ball.hc.front { border: 1.5px solid rgba(255, 69, 58, .6); color: #ffa19b; }
+.ball.hc.back { border: 1.5px solid rgba(10, 132, 255, .6); color: #8dbcff; }
+.hist-legend { margin: 0 0 16px; }
