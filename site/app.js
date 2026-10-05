@@ -82,13 +82,14 @@
       buckets.forEach(function (k) { groups[k] = []; });
       d[ballsKey].forEach(function (n, i) {
         var b = bucketFn(d[omKey][i]);
-        groups[b].push(n);
+        groups[b].push({ n: n, om: d[omKey][i] });
         sums[b]++;
       });
       var bars = buckets.map(function (k) {
         var g = groups[k];
+        var label = g.map(function (o) { return pad(o.n) + "<em>" + omTxt(o.om) + "</em>"; }).join(" ");
         return g.length ? '<div class="b-' + k + '" style="width:' + (g.length / perDraw * 100) +
-          '%" title="' + k + g.length + '"><span>' + g.map(pad).join(' ') + '</span></div>' : '';
+          '%" title="' + k + g.length + '"><span>' + label + '</span></div>' : '';
       }).join("");
       html += '<div class="trow"><span class="iss">' + d.i + '</span><div class="tbar">' + bars + "</div></div>";
     });

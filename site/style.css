@@ -213,3 +213,6 @@ footer { text-align: center; color: var(--faint); font-size: 12px; padding: 10px
 .ball.hc.front { border: 1.5px solid rgba(255, 69, 58, .6); color: #ffa19b; }
 .ball.hc.back { border: 1.5px solid rgba(10, 132, 255, .6); color: #8dbcff; }
 .hist-legend { margin: 0 0 16px; }
+
+/* 走势色块内遗漏期数小字 */
+.tbar span em { font-style: normal; font-size: 9px; font-weight: 400; opacity: .62; margin-left: 2px; }
