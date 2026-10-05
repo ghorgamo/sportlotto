@@ -208,11 +208,13 @@ footer { text-align: center; color: var(--faint); font-size: 12px; padding: 10px
 /* 历史开奖:球按热/温/冷着色(热=默认亮色实心) */
 .ball.hw { box-shadow: none; }
 .ball.hw.front { background: #c07f35; }
-.ball.hw.back { background: #4d7fc9; }
+.ball.hw.back { background: #2b4d85; }
 .ball.hc { background: transparent; box-shadow: none; }
 .ball.hc.front { border: 1.5px solid rgba(255, 69, 58, .75); color: #ffb3ad; }
 .ball.hc.back { border: 1.5px solid rgba(10, 132, 255, .75); color: #9cc2ff; }
 .hist-legend { margin: 0 0 16px; }
+#hist-table .ball.sm.front:not(.hw):not(.hc) { box-shadow: 0 3px 14px rgba(255, 69, 58, .4); }
+#hist-table .ball.sm.back:not(.hw):not(.hc) { box-shadow: 0 3px 14px rgba(10, 132, 255, .4); }
 
 /* 走势色块内遗漏期数小字 */
 .tbar span em { font-style: normal; font-size: 11px; font-weight: 400; opacity: .62; margin-left: 2px; }
