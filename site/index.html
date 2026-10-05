@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>大乐透数据看板 · 近500期</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>大乐透数据看板</h1>
+  <p id="meta-line">加载中…</p>
+</header>
+
+<main>
+  <section class="card" id="latest">
+    <h2>最新开奖</h2>
+    <div id="latest-body"></div>
+  </section>
+
+  <section class="card" id="query">
+    <h2>期号查询</h2>
+    <div class="query-row">
+      <input id="q-input" inputmode="numeric" placeholder="输入期号，如 26113" maxlength="5">
+      <button id="q-btn">查询</button>
+    </div>
+    <div id="q-result"></div>
+  </section>
+
+  <section class="card" id="trend">
+    <h2>前区遗漏结构走势 <span class="sub">近30期</span></h2>
+    <div id="trend-body"></div>
+    <div class="legend" id="trend-legend"></div>
+    <p class="note" id="trend-note"></p>
+  </section>
+
+  <section class="card" id="history">
+    <h2>历史开奖</h2>
+    <div class="pager">
+      <button id="pg-prev">‹ 上一页</button>
+      <span id="pg-info"></span>
+      <button id="pg-next">下一页 ›</button>
+    </div>
+    <div class="table-wrap"><table id="hist-table">
+      <thead><tr>
+        <th>期数</th><th>日期</th><th>前区</th><th>后区</th><th>遗漏结构</th><th>和值</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <section class="card" id="numbers">
+    <h2>号码统计 <span class="sub">500期 · 点击表头可排序</span></h2>
+    <h3>前区 <span class="sub">1–35</span></h3>
+    <div class="table-wrap"><table id="num-f" class="sortable">
+      <thead><tr>
+        <th data-k="n">号码</th><th data-k="ap">出球数</th><th data-k="rate">出球率</th>
+        <th data-k="cur">当前遗漏</th><th data-k="max">最大遗漏</th><th data-k="avg">平均遗漏</th>
+        <th data-k="cls">分类</th>
+      </tr></thead><tbody></tbody>
+    </table></div>
+    <h3>后区 <span class="sub">1–12</span></h3>
+    <div class="table-wrap"><table id="num-b" class="sortable">
+      <thead><tr>
+        <th data-k="n">号码</th><th data-k="ap">出球数</th><th data-k="rate">出球率</th>
+        <th data-k="cur">当前遗漏</th><th data-k="max">最大遗漏</th><th data-k="avg">平均遗漏</th>
+        <th data-k="cls">分类</th>
+      </tr></thead><tbody></tbody>
+    </table></div>
+  </section>
+</main>
+
+<footer>
+  <p>数据来源：500.com 开奖历史 · 遗漏分档：前区 重0/短1–2/中3–5/偏6–10/大11+，后区 重0/短1–4/中5–8/长9+ ·
+  热温冷按500期出球数排名划分 · 仅作研究记录</p>
+</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
