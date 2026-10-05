@@ -57,7 +57,7 @@
   document.getElementById("q-btn").onclick = doQuery;
   qInput.onkeydown = function (e) { if (e.key === "Enter") doQuery(); };
 
-  /* 遗漏结构走势(前区+后区):色块内显示该档实际开出的号码 */
+  /* 遗漏结构走势:每期一行,前区+后区 */
   function fBucket(om) {
     if (om < 0) return "大";
     if (om === 0) return "重";
@@ -73,37 +73,51 @@
     if (om <= 8) return "中";
     return "长";
   }
-  function renderTrend(bodyId, legendId, noteId, ballsKey, omKey, buckets, bucketFn, perDraw) {
-    var seg = draws.slice(0, 30), sums = {};
-    buckets.forEach(function (k) { sums[k] = 0; });
-    var html = "";
-    seg.forEach(function (d) {
-      var groups = {};
-      buckets.forEach(function (k) { groups[k] = []; });
+  (function () {
+    var seg = draws.slice(0, 30);
+    var BF = ["重", "短", "中", "偏", "大"], BB = ["重", "短", "中", "长"];
+    var sumsF = {}, sumsB = {};
+    BF.forEach(function (k) { sumsF[k] = 0; });
+    BB.forEach(function (k) { sumsB[k] = 0; });
+    function groups(d, ballsKey, omKey, buckets, bucketFn, sums) {
+      var g = {};
+      buckets.forEach(function (k) { g[k] = []; });
       d[ballsKey].forEach(function (n, i) {
         var b = bucketFn(d[omKey][i]);
-        groups[b].push({ n: n, om: d[omKey][i] });
+        g[b].push({ n: n, om: d[omKey][i] });
         sums[b]++;
       });
-      var bars = buckets.map(function (k) {
-        var g = groups[k];
-        var label = g.map(function (o) { return pad(o.n) + "<em>(" + omTxt(o.om) + ")</em>"; }).join(" ");
-        return g.length ? '<div class="b-' + k + '" style="width:' + (g.length / perDraw * 100) +
-          '%" title="' + k + g.length + '"><span>' + label + '</span></div>' : '';
-      }).join("");
-      html += '<div class="trow"><span class="iss">' + d.i + '</span><div class="tbar">' + bars + "</div></div>";
+      return g;
+    }
+    function barHtml(g, buckets, perDraw, zone) {
+      return '<div class="tbar ' + zone + '">' + buckets.map(function (k) {
+        var items = g[k];
+        if (!items.length) return "";
+        var label = items.map(function (o) {
+          return pad(o.n) + "<em>(" + omTxt(o.om) + ")</em>";
+        }).join(" ");
+        return '<div class="b-' + k + '" style="width:' + (items.length / perDraw * 100) +
+          '%" title="' + k + items.length + '"><span>' + label + "</span></div>";
+      }).join("") + "</div>";
+    }
+    var html = "";
+    seg.forEach(function (d) {
+      var gf = groups(d, "f", "fo", BF, fBucket, sumsF);
+      var gb = groups(d, "b", "bo", BB, bBucket, sumsB);
+      html += '<div class="trow"><span class="iss">' + d.i + "</span>" +
+        barHtml(gf, BF, 5, "front") + barHtml(gb, BB, 2, "back") + "</div>";
     });
-    document.getElementById(bodyId).innerHTML = html;
-    document.getElementById(legendId).innerHTML = buckets.map(function (k) {
-      return '<span><i class="b-' + k + '"></i>' + k + "</span>";
-    }).join("");
-    var totN = seg.length * perDraw;
-    document.getElementById(noteId).textContent = "近30期占比：" + buckets.map(function (k) {
-      return k + Math.round(sums[k] / totN * 100) + "%";
-    }).join("　");
-  }
-  renderTrend("trend-body", "trend-legend", "trend-note", "f", "fo", ["重", "短", "中", "偏", "大"], fBucket, 5);
-  renderTrend("trend-body-b", "trend-legend-b", "trend-note-b", "b", "bo", ["重", "短", "中", "长"], bBucket, 2);
+    document.getElementById("trend-body").innerHTML = html;
+    document.getElementById("trend-legend").innerHTML =
+      ["重", "短", "中"].map(function (k) {
+        return '<span><i class="b-' + k + '"></i>' + k + "</span>";
+      }).join("") +
+      '<span><i class="b-偏"></i>偏</span><span><i class="b-大"></i>大/长</span>';
+    document.getElementById("trend-note").textContent = "前区近30期占比: " +
+      BF.map(function (k) { return k + Math.round(sumsF[k] / 150 * 100) + "%"; }).join("  ");
+    document.getElementById("trend-note-b").textContent = "后区近30期占比: " +
+      BB.map(function (k) { return k + Math.round(sumsB[k] / 60 * 100) + "%"; }).join("  ");
+  })();
 
   /* 历史开奖 */
   var PER = 25, page = 0, pages = Math.ceil(draws.length / PER);

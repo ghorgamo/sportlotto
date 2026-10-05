@@ -157,6 +157,12 @@ button.ghost {
   display: flex; height: 28px; border-radius: 8px; overflow: hidden; flex: 1;
   background: rgba(255, 255, 255, .05);
 }
+.tbar.front { flex: 5; }
+.tbar.back { flex: 2; }
+.trow.thead { margin-bottom: 6px; }
+.zhead { font-size: 12px; color: var(--faint); letter-spacing: .24em; padding-left: .24em; }
+.zhead.zf { flex: 5; }
+.zhead.zb { flex: 2; }
 .tbar div {
   height: 100%; display: flex; align-items: center; justify-content: center;
   transition: width .6s cubic-bezier(.22, 1, .36, 1);
