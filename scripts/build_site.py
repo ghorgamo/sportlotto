@@ -43,17 +43,20 @@ def main():
                 "max": row["max_omission"], "avg": row["avg_omission"],
                 "cls": row["class"],
             })
-    payload = {
+    payload1 = {
         "meta": {"count": len(draws),
                  "newest": draws[0]["i"], "oldest": draws[-1]["i"]},
-        "draws": draws, "numbers": numbers,
+        "draws": draws[:250], "numbers": numbers,
     }
-    out = SITE / "data.js"
-    out.write_text("window.DLT = " + json.dumps(payload, ensure_ascii=False,
-                                                separators=(",", ":")) + ";",
-                   encoding="utf-8")
-    print(f"wrote {out} ({out.stat().st_size // 1024} KB, "
-          f"{len(draws)} draws)")
+    payload2 = {"draws": draws[250:]}
+    # 拆成两个文件,避开单次推送的参数长度限制
+    for name, payload in (("data1.js", payload1), ("data2.js", payload2)):
+        out = SITE / name
+        var = "window.DLT1" if name == "data1.js" else "window.DLT2"
+        out.write_text(var + " = " + json.dumps(payload, ensure_ascii=False,
+                                               separators=(",", ":")) + ";",
+                       encoding="utf-8")
+        print(f"wrote {out} ({out.stat().st_size // 1024} KB)")
 
 
 if __name__ == "__main__":

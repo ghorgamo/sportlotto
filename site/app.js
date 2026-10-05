@@ -1,6 +1,10 @@
 (function () {
   "use strict";
-  var D = window.DLT;
+  var D = (function () {
+    var a = window.DLT1, b = window.DLT2;
+    if (!a) return null;
+    return { meta: a.meta, draws: a.draws.concat(b ? b.draws : []), numbers: a.numbers };
+  })();
   if (!D) { document.getElementById("meta-line").textContent = "数据加载失败"; return; }
   var draws = D.draws, numbers = D.numbers;
 
@@ -25,7 +29,7 @@
         '<div class="detail-om">遗漏' + omTxt(d.bo[i]) + "</div></div>";
     }).join("");
     return '<div class="draw-meta">第' + d.i + "期 · " + d.d + "</div>" +
-      '<div class="balls">' + f + '<span style="color:#9ca3af">+</span>' + b + "</div>" +
+      '<div class="balls">' + f + '<span class="plus">+</span>' + b + "</div>" +
       '<div class="struct">遗漏结构：前区 <b>' + d.fs + "</b>　后区 <b>" + d.bs + "</b></div>" +
       '<div class="stat-line">和值' + d.sum + " · 跨度" + d.span + " · " + d.oe + " · " + d.bsx +
       " · 连号" + d.consec + "对 · 前区热" + d.fh + "温" + d.fw + "冷" + d.fc +
