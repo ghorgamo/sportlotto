@@ -12,12 +12,13 @@
     "近" + D.meta.count + "期 · " + D.meta.oldest + " – " + D.meta.newest;
 
   function ball(n, zone, sm) {
-    return '<span class="ball ' + zone + (sm ? " sm" : "") + '">' + n + "</span>";
+    return '<span class="ball ' + zone + (sm ? " sm" : "") + '">' + pad(n) + "</span>";
   }
   function balls(arr, zone, sm) {
     return '<div class="balls">' + arr.map(function (n) { return ball(n, zone, sm); }).join("") + "</div>";
   }
   function omTxt(om) { return om < 0 ? "–" : om; }
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
 
   function detailCard(d) {
     var f = d.f.map(function (n, i) {
@@ -81,7 +82,7 @@
       var bars = buckets.map(function (k) {
         var g = groups[k];
         return g.length ? '<div class="b-' + k + '" style="width:' + (g.length / perDraw * 100) +
-          '%" title="' + k + g.length + '"><span>' + g.join(' ') + '</span></div>' : '';
+          '%" title="' + k + g.length + '"><span>' + g.map(pad).join(' ') + '</span></div>' : '';
       }).join("");
       html += '<div class="trow"><span class="iss">' + d.i + '</span><div class="tbar">' + bars + "</div></div>";
     });
@@ -127,7 +128,7 @@
         return (va - vb) * dir || a.n - b.n;
       });
       tb.innerHTML = sorted.map(function (r) {
-        return "<tr><td class='num'>" + r.n + "</td><td>" + r.ap + "</td><td>" +
+        return "<tr><td class='num'>" + pad(r.n) + "</td><td>" + r.ap + "</td><td>" +
           (r.rate * 100).toFixed(1) + "%</td><td class='" + (+r.cur >= 10 ? "cur-high" : "") + "'>" +
           r.cur + "</td><td>" + r.max + "</td><td>" + r.avg + "</td>" +
           '<td><span class="badge ' + r.cls + '">' + r.cls + "</span></td></tr>";
