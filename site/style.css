@@ -157,7 +157,11 @@ button.ghost {
   display: flex; height: 22px; border-radius: 7px; overflow: hidden; flex: 1;
   background: rgba(255, 255, 255, .05);
 }
-.tbar div { height: 100%; transition: width .6s cubic-bezier(.22, 1, .36, 1); }
+.tbar div {
+  height: 100%; display: flex; align-items: center; justify-content: center;
+  transition: width .6s cubic-bezier(.22, 1, .36, 1);
+}
+.tbar div span { font-size: 11px; font-weight: 700; color: rgba(255, 255, 255, .95); line-height: 1; }
 .b-重 { background: #ff453a; } .b-短 { background: #ff9f0a; }
 .b-中 { background: #30d158; } .b-偏 { background: #0a84ff; }
 .b-大, .b-长 { background: #bf5af2; }

@@ -50,30 +50,36 @@
   document.getElementById("q-btn").onclick = doQuery;
   qInput.onkeydown = function (e) { if (e.key === "Enter") doQuery(); };
 
-  /* 遗漏结构走势 */
-  var BK = ["重", "短", "中", "偏", "大"];
-  var seg = draws.slice(0, 30), sums = { 重: 0, 短: 0, 中: 0, 偏: 0, 大: 0 };
-  var html = "";
-  seg.forEach(function (d) {
-    var parts = {}, tot = 0;
-    d.fs.split(" ").forEach(function (p) {
-      var m = p.match(/^(重|短|中|偏|大)(\d+)$/);
-      if (m) { parts[m[1]] = +m[2]; tot += +m[2]; sums[m[1]] += +m[2]; }
+  /* 遗漏结构走势(前区+后区) */
+  function renderTrend(bodyId, legendId, noteId, field, buckets, perDraw) {
+    var seg = draws.slice(0, 30), sums = {};
+    buckets.forEach(function (k) { sums[k] = 0; });
+    var re = new RegExp("^(" + buckets.join("|") + ")(\\d+)$");
+    var html = "";
+    seg.forEach(function (d) {
+      var parts = {}, tot = 0;
+      d[field].split(" ").forEach(function (p) {
+        var m = p.match(re);
+        if (m) { parts[m[1]] = +m[2]; tot += +m[2]; sums[m[1]] += +m[2]; }
+      });
+      var bars = buckets.map(function (k) {
+        var c = parts[k] || 0;
+        return c ? '<div class="b-' + k + '" style="width:' + (c / tot * 100) +
+          '%" title="' + k + c + '"><span>' + c + "</span></div>" : "";
+      }).join("");
+      html += '<div class="trow"><span class="iss">' + d.i + '</span><div class="tbar">' + bars + "</div></div>";
     });
-    var bars = BK.map(function (k) {
-      var c = parts[k] || 0;
-      return c ? '<div class="b-' + k + '" style="width:' + (c / tot * 100) + '%" title="' + k + c + '"></div>' : "";
+    document.getElementById(bodyId).innerHTML = html;
+    document.getElementById(legendId).innerHTML = buckets.map(function (k) {
+      return '<span><i class="b-' + k + '"></i>' + k + "</span>";
     }).join("");
-    html += '<div class="trow"><span class="iss">' + d.i + '</span><div class="tbar">' + bars + "</div></div>";
-  });
-  document.getElementById("trend-body").innerHTML = html;
-  document.getElementById("trend-legend").innerHTML = BK.map(function (k) {
-    return '<span><i class="b-' + k + '"></i>' + k + "</span>";
-  }).join("");
-  var tot30 = seg.length * 5;
-  document.getElementById("trend-note").textContent = "近30期占比：" + BK.map(function (k) {
-    return k + Math.round(sums[k] / tot30 * 100) + "%";
-  }).join("　");
+    var totN = seg.length * perDraw;
+    document.getElementById(noteId).textContent = "近30期占比：" + buckets.map(function (k) {
+      return k + Math.round(sums[k] / totN * 100) + "%";
+    }).join("　");
+  }
+  renderTrend("trend-body", "trend-legend", "trend-note", "fs", ["重", "短", "中", "偏", "大"], 5);
+  renderTrend("trend-body-b", "trend-legend-b", "trend-note-b", "bs", ["重", "短", "中", "长"], 2);
 
   /* 历史开奖 */
   var PER = 25, page = 0, pages = Math.ceil(draws.length / PER);
