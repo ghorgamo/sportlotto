@@ -50,22 +50,38 @@
   document.getElementById("q-btn").onclick = doQuery;
   qInput.onkeydown = function (e) { if (e.key === "Enter") doQuery(); };
 
-  /* 遗漏结构走势(前区+后区) */
-  function renderTrend(bodyId, legendId, noteId, field, buckets, perDraw) {
+  /* 遗漏结构走势(前区+后区):色块内显示该档实际开出的号码 */
+  function fBucket(om) {
+    if (om < 0) return "大";
+    if (om === 0) return "重";
+    if (om <= 2) return "短";
+    if (om <= 5) return "中";
+    if (om <= 10) return "偏";
+    return "大";
+  }
+  function bBucket(om) {
+    if (om < 0) return "长";
+    if (om === 0) return "重";
+    if (om <= 4) return "短";
+    if (om <= 8) return "中";
+    return "长";
+  }
+  function renderTrend(bodyId, legendId, noteId, ballsKey, omKey, buckets, bucketFn, perDraw) {
     var seg = draws.slice(0, 30), sums = {};
     buckets.forEach(function (k) { sums[k] = 0; });
-    var re = new RegExp("^(" + buckets.join("|") + ")(\\d+)$");
     var html = "";
     seg.forEach(function (d) {
-      var parts = {}, tot = 0;
-      d[field].split(" ").forEach(function (p) {
-        var m = p.match(re);
-        if (m) { parts[m[1]] = +m[2]; tot += +m[2]; sums[m[1]] += +m[2]; }
+      var groups = {};
+      buckets.forEach(function (k) { groups[k] = []; });
+      d[ballsKey].forEach(function (n, i) {
+        var b = bucketFn(d[omKey][i]);
+        groups[b].push(n);
+        sums[b]++;
       });
       var bars = buckets.map(function (k) {
-        var c = parts[k] || 0;
-        return c ? '<div class="b-' + k + '" style="width:' + (c / tot * 100) +
-          '%" title="' + k + c + '"><span>' + c + "</span></div>" : "";
+        var g = groups[k];
+        return g.length ? '<div class="b-' + k + '" style="width:' + (g.length / perDraw * 100) +
+          '%" title="' + k + g.length + '"><span>' + g.join(' ') + '</span></div>' : '';
       }).join("");
       html += '<div class="trow"><span class="iss">' + d.i + '</span><div class="tbar">' + bars + "</div></div>";
     });
@@ -78,8 +94,8 @@
       return k + Math.round(sums[k] / totN * 100) + "%";
     }).join("　");
   }
-  renderTrend("trend-body", "trend-legend", "trend-note", "fs", ["重", "短", "中", "偏", "大"], 5);
-  renderTrend("trend-body-b", "trend-legend-b", "trend-note-b", "bs", ["重", "短", "中", "长"], 2);
+  renderTrend("trend-body", "trend-legend", "trend-note", "f", "fo", ["重", "短", "中", "偏", "大"], fBucket, 5);
+  renderTrend("trend-body-b", "trend-legend-b", "trend-note-b", "b", "bo", ["重", "短", "中", "长"], bBucket, 2);
 
   /* 历史开奖 */
   var PER = 25, page = 0, pages = Math.ceil(draws.length / PER);
