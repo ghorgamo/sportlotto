@@ -6,7 +6,14 @@
 <title>大乐透 · 近500期数据看板</title>
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body id="top">
+
+<nav class="nav"><div class="nav-inner">
+  <a class="brand" href="#top">大乐透看板</a>
+  <div class="nav-links">
+    <a href="#query">查询</a><a href="#trend">走势</a><a href="#history">历史</a><a href="#numbers">统计</a>
+  </div>
+</div></nav>
 
 <header class="hero">
   <div class="hero-glow"></div>
@@ -19,7 +26,7 @@
 </header>
 
 <main>
-  <section class="card" id="query">
+  <section class="card reveal" id="query">
     <div class="sec-head">
       <h2>期号查询</h2>
       <p>输入任意期号，回看当期号码与遗漏结构</p>
@@ -31,7 +38,7 @@
     <div id="q-result"></div>
   </section>
 
-  <section class="card" id="trend">
+  <section class="card reveal" id="trend">
     <div class="sec-head">
       <h2>遗漏结构走势</h2>
       <p>近30期 · 前区重/短/中/偏/大分布</p>
@@ -41,7 +48,7 @@
     <p class="note" id="trend-note"></p>
   </section>
 
-  <section class="card" id="history">
+  <section class="card reveal" id="history">
     <div class="sec-head">
       <h2>历史开奖</h2>
       <p>500期全记录</p>
@@ -59,7 +66,7 @@
     </table></div>
   </section>
 
-  <section class="card" id="numbers">
+  <section class="card reveal" id="numbers">
     <div class="sec-head">
       <h2>号码统计</h2>
       <p>500期 · 点击表头排序 · 热/温/冷按出球数排名</p>
