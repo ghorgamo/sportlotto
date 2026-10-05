@@ -87,7 +87,7 @@
       });
       var bars = buckets.map(function (k) {
         var g = groups[k];
-        var label = g.map(function (o) { return pad(o.n) + "<em>" + omTxt(o.om) + "</em>"; }).join(" ");
+        var label = g.map(function (o) { return pad(o.n) + "<em>(" + omTxt(o.om) + ")</em>"; }).join(" ");
         return g.length ? '<div class="b-' + k + '" style="width:' + (g.length / perDraw * 100) +
           '%" title="' + k + g.length + '"><span>' + label + '</span></div>' : '';
       }).join("");
