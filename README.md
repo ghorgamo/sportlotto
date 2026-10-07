@@ -42,9 +42,20 @@ python3 scripts/fetch_history.py
 
 # 2) 重新构建衍生数据集
 python3 scripts/build_datasets.py
+
+# 3) 重新生成网站数据(site/data1.js, site/data2.js)
+python3 scripts/build_site.py
 ```
 
 构建脚本只依赖 Python 标准库。
+
+## 脚本说明
+
+- `scripts/fetch_history.py`：增量抓取，合并去重后写入 `data/draws_raw.txt`
+- `scripts/build_datasets.py`：由原始数据构建三张衍生表
+- `scripts/build_site.py`：由分析表生成网站用的 `data1.js` / `data2.js`
+- `scripts/common.py`：共享口径——号码范围、遗漏分档边界、热/温/冷排名截断
+  与分档函数，只在此定义一次，各脚本 import 使用
 
 ## 数据来源
 
