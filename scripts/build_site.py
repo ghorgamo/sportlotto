@@ -10,6 +10,9 @@ DATA = ROOT / "data"
 SITE = ROOT / "site"
 SITE.mkdir(exist_ok=True)
 
+# data.js 拆分阈值:避免单文件过大(历史:单次推送的参数长度限制)
+SPLIT_AT = 250
+
 
 def main():
     draws = []
@@ -46,9 +49,9 @@ def main():
     payload1 = {
         "meta": {"count": len(draws),
                  "newest": draws[0]["i"], "oldest": draws[-1]["i"]},
-        "draws": draws[:250], "numbers": numbers,
+        "draws": draws[:SPLIT_AT], "numbers": numbers,
     }
-    payload2 = {"draws": draws[250:]}
+    payload2 = {"draws": draws[SPLIT_AT:]}
     # 拆成两个文件,避开单次推送的参数长度限制
     for name, payload in (("data1.js", payload1), ("data2.js", payload2)):
         out = SITE / name

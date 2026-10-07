@@ -14,7 +14,6 @@
 
 import re
 import sys
-import time
 import urllib.request
 from pathlib import Path
 
@@ -52,29 +51,33 @@ def read_existing():
     raw_file = DATA / "draws_raw.txt"
     rows = []
     if raw_file.exists():
-        rows = [l for l in raw_file.read_text(encoding="utf-8").splitlines()
-                if l.strip() and not l.startswith("TOTAL=")]
+        rows = [line for line in raw_file.read_text(encoding="utf-8").splitlines()
+                if line.strip() and not line.startswith("TOTAL=")]
     return rows
+
+
+def issue_of(line):
+    return line.split("|")[0]
 
 
 def main():
     old = read_existing()
-    max_issue = max((l.split("|")[0] for l in old), default="23001")
+    old_issues = {issue_of(line) for line in old}
+    max_issue = max(old_issues, default="23001")
     start, end = str(int(max_issue) - 5), str(int(max_issue) + 500)
     try:
         fresh = fetch_range(start, end)
     except Exception as e:  # noqa: BLE001 - 如实报告抓取失败
         print(f"抓取失败: {e}", file=sys.stderr)
         sys.exit(1)
-    time.sleep(1)
-    seen, merged = set(), []
-    for line in fresh + old:  # 新数据在前
-        issue = line.split("|")[0]
+    # 按期号去重,新数据优先(新在前,保留首次出现)
+    merged, seen = [], set()
+    for line in fresh + old:
+        issue = issue_of(line)
         if issue not in seen:
             seen.add(issue)
             merged.append(line)
-    new_count = sum(1 for l in merged[:len(fresh)]
-                    if l.split("|")[0] not in {x.split("|")[0] for x in old})
+    new_count = sum(1 for line in fresh if issue_of(line) not in old_issues)
     (DATA / "draws_raw.txt").write_text("\n".join(merged) + "\n",
                                         encoding="utf-8")
     print(f"新增 {new_count} 期,共 {len(merged)} 期 -> data/draws_raw.txt")
